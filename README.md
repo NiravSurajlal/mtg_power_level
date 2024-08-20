@@ -1,2 +1,2 @@
-# mtg_power_level
+# Commander Deck Power Level
 Project to allow users to guess-timate their decks power level.
