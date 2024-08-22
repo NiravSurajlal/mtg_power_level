@@ -45,7 +45,7 @@ def main():
         combos_delta = combos_at_end - combos_at_start
         print(f"Added Combos: {combos_delta}")
     
-    if __OVERWRITE_COMBOS_TXT:
+    if __OVERWRITE_COMBOS_TXT and __MAKE_API_CALLS__:
         with open(os.path.join('data', 'combos.txt'), 'w+') as f:
             s = str(mydeck.combos).replace('],', ']\n')
             f.write(s)
@@ -56,7 +56,10 @@ def main():
             cmbs = f.readlines()
         for i in range(0, len(cmbs)):
             # THIS WILL NOT WORK if a card has an apostrophe in name
-            cmbs[i] = re.findall(r"'(.*?)'", cmbs[i])
+            l1 = re.findall(r"'(.*?)'", cmbs[i])
+            l2 = re.findall(r'"(.*?)"', cmbs[i])
+            cmbs[i] = l1+l2
+
         mydeck.combos = cmbs.copy()
     
     mydeck.check_all_combos(mydeck.combos)
