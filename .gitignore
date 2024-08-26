@@ -1,5 +1,7 @@
-/data/*.json
 .venv*
+/data/AllPrintings.json
+/data/my_cardlist*.json
+cmm_saltiness.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -6,22 +6,22 @@ __DEBUG__ = False
 __DATA_FOLDER__ = os.path.join('data')
 
 def update_my_cardlist():
-    # dict_keys(['artist', 'artistIds', 'availability', 'boosterTypes', 'borderColor', 
-    # 'colorIdentity', 'colors', 'convertedManaCost', 'edhrecRank', 'finishes', 'flavorText', 
-    # 'foreignData', 'frameVersion', 'hasFoil', 'hasNonFoil', 'identifiers', 'keywords', 
-    # 'language', 'layout', 'legalities', 'manaCost', 'manaValue', 'name', 'number', 'originalText', 
-    # 'originalType', 'power', 'printings', 'purchaseUrls', 'rarity', 'setCode', 'sourceProducts', 
+    # dict_keys(['artist', 'artistIds', 'availability', 'boosterTypes', 'borderColor',
+    # 'colorIdentity', 'colors', 'convertedManaCost', 'edhrecRank', 'finishes', 'flavorText',
+    # 'foreignData', 'frameVersion', 'hasFoil', 'hasNonFoil', 'identifiers', 'keywords',
+    # 'language', 'layout', 'legalities', 'manaCost', 'manaValue', 'name', 'number', 'originalText',
+    # 'originalType', 'power', 'printings', 'purchaseUrls', 'rarity', 'setCode', 'sourceProducts',
     # 'subtypes', 'supertypes', 'text', 'toughness', 'type', 'types', 'uuid', 'variations'])
 
-    pth = os.path.join(__DATA_FOLDER__, "AllPrintings.json") 
+    pth = os.path.join(__DATA_FOLDER__, "AllPrintings.json")
     with open(pth, encoding='utf-8') as f:
         all_card_data = json.load(f, )
 
     cardlist = {}
     num = 0
     # card_0 = all_card_data['data']['ALL']['cards'][0]['manaCost']
-    for set in all_card_data['data'].keys():
-        for card_data in all_card_data['data'][set]['cards']:
+    for mtgset in all_card_data['data'].keys():
+        for card_data in all_card_data['data'][mtgset]['cards']:
             card_name = card_data['name']
 
             if __DEBUG__:
@@ -43,15 +43,15 @@ def update_my_cardlist():
                     card_colorIdentity = 'Nan'
 
                 try:
-                    card_manaCost = card_data['manaCost'] 
+                    card_manaCost = card_data['manaCost']
                 except KeyError:
                     card_manaCost = 'Nan'
-                
+
                 try:
                     card_manaValue = card_data['manaValue']
                 except KeyError:
                     card_manaValue = 'Nan'
-                
+
                 try:
                     card_convertedManaCost = card_data['convertedManaCost']
                 except KeyError:
@@ -61,7 +61,7 @@ def update_my_cardlist():
                     card_type = card_data['type']
                 except KeyError:
                     card_type = 'Nan'
-    
+
                 try:
                     card_types = card_data['types']
                 except KeyError:
@@ -75,16 +75,16 @@ def update_my_cardlist():
                 cardlist[card_name] = {'name':card_name,
                                 'colors':card_colors,
                                 'colorIdentity':card_colorIdentity,
-                                'manaCost': card_manaCost, 
+                                'manaCost': card_manaCost,
                                 'manaValue': card_manaValue,
                                 'convertedManaCost':card_convertedManaCost,
                                 'type': card_type,
                                 'types': card_types,
                                 'text': card_text
                                 }
-            
-    my_cardlist_filename = os.path.join(__DATA_FOLDER__, f"my_cardlist")  
-    try:     
+
+    my_cardlist_filename = os.path.join(__DATA_FOLDER__, f"my_cardlist")
+    try:
         pth = f"{my_cardlist_filename}.json"
         with open(pth, encoding='utf-8', mode='x+') as f:
             f.write(json.dump(cardlist, sort_keys=True))
@@ -101,7 +101,7 @@ def update_my_cardlist():
             json.dump(cardlist, f, sort_keys=True)
 
 def check_card_data():
-    pth = os.path.join(__DATA_FOLDER__, "AllPrintings.json") 
+    pth = os.path.join(__DATA_FOLDER__, "AllPrintings.json")
     with open(pth, encoding='utf-8') as f:
         all_card_data = json.load(f, )
 

@@ -1,0 +1,28 @@
+{
+    "permanent_types": ["Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"],
+    "tags": {
+        "my_description": "Will use this as the base\nCreate another script to update considering other factors/abnormalities, like for specific cards\nCheck the condition of each tag for special flags.",
+        "ramp": {
+            "description": "must be a non-land permanent and contain one of the tags and cannot be a once only effect (like an etb)",
+            "card_description_flags": {
+                "perm":{"{T}&Add": 1,
+                        "create&treasure": 1,
+                        "search&land": 1,
+                        "additional&land": 1,
+                        "cost&less": 1,
+                        "put&land": 1,
+                        "!when&cast": "",
+                        "!when&enters|leaves&battelfield": ""}}
+        },
+        "carddraw": {
+            "description": "Must contain 'draw' & 'card' and can be a spell or a permanent.\nIf it is a permanent, only differentiate if continuous draw.\nCard to Mana ratio is important.",
+            "card_description_flags": {
+                "cardtomana": 1.3,
+                "draw&card": 1,
+                "isPermanent": 2,
+                "!when&cast": "",
+                "!when&enters|leaves&battelfield": ""
+            }
+        }
+    }
+}
