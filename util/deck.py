@@ -65,20 +65,23 @@ class MyDeck:
         self.updated_combo_info['general'] = {}
 
         for combo_cards in combos:
-            all_cards_in_deck, combo_color_id, total_cmc = self.check_cards_in_combo(combo_cards)
+            combo_color_id, total_cmc, total_pips, total_generic \
+                = self.check_cards_in_combo(combo_cards)
 
-            if all_cards_in_deck:
-                combo_id = f'combo_{len(self.updated_combo_info)}'
-                self.updated_combo_info[combo_id] = {}
 
-                num_of_cards = len(combo_cards)
-                self.updated_combo_info[combo_id]['colorID'] = combo_color_id
-                self.updated_combo_info[combo_id]['totalCMC'] = total_cmc
-                self.updated_combo_info[combo_id]['numCards'] = num_of_cards
+            combo_id = f'combo_{len(self.updated_combo_info)}'
+            self.updated_combo_info[combo_id] = {}
 
-                combos_probability = combos_probability + \
-                    self.get_combo_draw_probability_by_cards_drawn(\
-                        num_cards_drawn=num_cards_drawn, combo=combo_cards)
+            num_of_cards = len(combo_cards)
+            self.updated_combo_info[combo_id]['colorID'] = combo_color_id
+            self.updated_combo_info[combo_id]['totalCMC'] = total_cmc
+            self.updated_combo_info[combo_id]['numCards'] = num_of_cards
+            self.updated_combo_info[combo_id]['totalPips'] = total_pips
+            self.updated_combo_info[combo_id]['totalGeneric'] = total_generic
+
+            combos_probability = combos_probability + \
+                self.get_combo_draw_probability_by_cards_drawn(\
+                    num_cards_drawn=num_cards_drawn, combo=combo_cards)
 
         self.updated_combo_info['general']['prob_of_combos'] = combos_probability
 
@@ -92,18 +95,29 @@ class MyDeck:
         Returns:
             tuple: _description_
         """
-        all_cards_in_deck = True
+
         combo_color_id = []
         total_cmc = 0
+        total_pips = []
+        total_generic = 0.0
 
         for card in combo_cards:
-            all_cards_in_deck = self.check_card_in_deck(card)
-            combo_color_id = sorted(self.build_combo_color_identity(card, combo_color_id))
-            total_cmc = total_cmc + self.decklist[card]['info']['manaValue']
-            if not all_cards_in_deck:
-                break
+            try:
+                check_card = self.decklist[card]
+                card_manacost = check_card['info']['manaCost']
+                total_pips = total_pips + re.findall('[B, G, R, U, W]', card_manacost)
+                try:
+                    generic_mana = float(''.join(re.findall(r'\d', card_manacost)))
+                except ValueError:
+                    generic_mana = 0.0
+                total_generic = total_generic + generic_mana
+                combo_color_id = sorted(self.build_combo_color_identity(card, combo_color_id))
+                total_cmc = total_cmc + self.decklist[card]['info']['manaValue']
 
-        return all_cards_in_deck, combo_color_id, total_cmc
+            except KeyError:
+                print(f"Card -{card}- not in deck.")
+
+        return combo_color_id, total_cmc, total_pips, total_generic
 
     def check_card_in_deck(self, card) -> bool:
         """_summary_
@@ -143,7 +157,7 @@ class MyDeck:
         return num_of_card_in_deck/num_unique_cards*100
 
     def get_combo_draw_probability_by_cards_drawn(self, num_cards_drawn: int, combo: list, \
-        num_of_cards_in_deck=100) -> float:
+        total_num_cards_to_consider=99) -> float:
         """_summary_
 
         Args:
@@ -157,9 +171,9 @@ class MyDeck:
 
         num_unique_cards_in_combo = len(combo)
         # total number of ways to draw X cards
-        p_of_num_unique_hands = math.comb(num_of_cards_in_deck, num_cards_drawn)
+        p_of_num_unique_hands = math.comb(total_num_cards_to_consider, num_cards_drawn)
         # total number of ways to choose the remaining cards in the hand (not in combo)
-        p_of_rem_cards_in_hand = math.comb(num_of_cards_in_deck-num_unique_cards_in_combo, \
+        p_of_rem_cards_in_hand = math.comb(total_num_cards_to_consider-num_unique_cards_in_combo, \
             num_cards_drawn-num_unique_cards_in_combo)
         # p of favourable outcomes
         p_favourable = p_of_rem_cards_in_hand/p_of_num_unique_hands

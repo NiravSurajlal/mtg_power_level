@@ -45,6 +45,8 @@ def update_card_list_flags():
         if __DEBUG__:
             card_name = 'Undead Warchief'
             # card_name = 'Sol Ring'
+            # card_name = 'Gruul Signet'
+            card_name = "Kodama's Reach"
             card_details = cardlist[card_name]
 
         permanent_types_copy = permanent_types.copy()
@@ -59,6 +61,8 @@ def update_card_list_flags():
                 r = RampChecker(card_details, json_tag_description, is_card_perm, card_name)
                 r.assign_score()
                 print(f"Card {card_name} | score {r.avg_ramp_weight}|")
+
+        break
 
     print('here')
 

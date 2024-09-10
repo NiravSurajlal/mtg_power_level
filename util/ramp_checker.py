@@ -29,17 +29,14 @@ class RampChecker:
     def assign_score(self):
         json_text_flags = self.json_tag_description['card_description_flags']
 
-        if self.is_card_perm:
-            for flag_desc, normal_M_to_CC in json_text_flags['perm'].items():
-                flags_desc_updated =  r'(.*?)'.join(flag_desc.split('&'))
-                print(flags_desc_updated)
-                if re.search(flags_desc_updated, self.card_text):
-                    self.__select_ramp_function__(flag_desc)
-                # elif True:
-                #     print(f"Unchecked ramp text:\n{self.card_text}")
 
-        else:
-            pass
+        for flag_desc, normal_M_to_CC in json_text_flags['perm'].items():
+            flags_desc_updated =  r'(.*?)'.join(flag_desc.split('&'))
+            print(flags_desc_updated)
+            if re.search(flags_desc_updated, self.card_text):
+                self.__select_ramp_function__(flag_desc)
+            # elif True:
+            #     print(f"Unchecked ramp text:\n{self.card_text}")
 
         return 0
 

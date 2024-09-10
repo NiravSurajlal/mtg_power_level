@@ -5,7 +5,7 @@ import requests
 from util.deck import MyDeck
 from sites import cmm_spellbook
 
-__MAKE_API_CALLS__ = False
+__MAKE_COMBO_API_CALLS__ = False
 __OVERWRITE_COMBOS_TXT = False
 
 def update_deck_combos(mydeck: MyDeck) -> int:
@@ -28,7 +28,7 @@ def update_deck_combos(mydeck: MyDeck) -> int:
             print(f'ColorID from: {card_name} - {mydeck.color_id}')
         query = cmm_spellbook.CardComboQuery(card_name)
 
-        if __MAKE_API_CALLS__:
+        if __MAKE_COMBO_API_CALLS__:
             response = requests.get(query.query, timeout=20)
             # here we construct the list of combos + combo cards needed
             # if a card in the deck is already in the combo list, skip it
@@ -74,7 +74,7 @@ def update_combos_text_file(mydeck: MyDeck) -> int:
         int: _description_
     """
 
-    if __OVERWRITE_COMBOS_TXT and __MAKE_API_CALLS__:
+    if __OVERWRITE_COMBOS_TXT and __MAKE_COMBO_API_CALLS__:
         with open(os.path.join('data', 'combos.txt'), 'w+', encoding='utf-8') as f:
             s = str(mydeck.combos).replace('],', ']\n')
             f.write(s)
@@ -98,7 +98,8 @@ def main():
     print()
 
     update_deck_combos_status = update_deck_combos(mydeck)
-    load_test_combo_list_status = load_test_combo_list(mydeck)
+    if not __MAKE_COMBO_API_CALLS__:
+        load_test_combo_list_status = load_test_combo_list(mydeck)
     update_combos_text_file_status = update_combos_text_file(mydeck)
 
     mydeck.check_all_combos(mydeck.combos)
